@@ -248,19 +248,27 @@ $.fcdp = {
 			});
 		};
 		
+		var clearFunction = null;
 		if (opts.clearButton) {
-			opts.clearButton.click(function(evt) {
-				evt.preventDefault();
-				var opts = $(this).closest('.calendar').data('opts');
+			var clearButton = opts.clearButton;
+			clearFunction = function(evt) {
+				if (evt) evt.preventDefault();
+				var opts = $(clearButton).closest('.calendar').data('opts');
 				opts.datePicker.add(opts.timePicker).hide();
 				$.fcdp.setFieldDate(opts, null);
-			});
+			};
+			opts.clearButton.click(clearFunction);
 		};
 
-		this.setFieldDate(opts, this.getFieldDate(opts));
+		var fieldDate = this.getFieldDate(opts);
+		this.setFieldDate(opts, fieldDate);
 		this.buildCalendar(opts);
+		
 		this.buildTime(opts);
 		this.updateTimePicker(opts);
+		if (fieldDate === null && clearFunction) {
+			clearFunction(null);
+		}
 	},
 	
 	buildTime: function(opts) {
